@@ -1,6 +1,6 @@
 package org.spigotmc.interglot;
 
-import com.google.common.io.ByteStreams;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -71,7 +71,14 @@ public class App {
                     continue;
                 }
                 String name = entry.getName();
-                byte[] entryBytes = ByteStreams.toByteArray(inJar);
+
+                ByteArrayOutputStream b = new ByteArrayOutputStream();
+                byte[] buf = new byte[0x1000];
+                int r;
+                while ((r = inJar.read(buf)) != -1) {
+                    b.write(buf, 0, r);
+                }
+                byte[] entryBytes = b.toByteArray();
                 // logger.info("Read " + name + " from input jar.");
 
                 if (name.endsWith(".class")) {
