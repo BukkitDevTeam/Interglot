@@ -124,7 +124,7 @@ public class Gui extends JFrame {
         warning.setFont(new Font("Ubuntu", 0, 11)); // NOI18N
         warning.setLineWrap(true);
         warning.setRows(5);
-        warning.setText("This tool is provided to update plugins which might not otherwise work on unmodified\nCraftBukkit builds. Use with caution.\n\nHere is a guy with his foot in this mouth to remind you.");
+        warning.setText("This tool is provided to update plugins which might not otherwise work on unmodified\nCraftBukkit builds. Use with caution.\n\nHere is a guy with his foot in his mouth to remind you.");
         warning.setWrapStyleWord(true);
         warning.setFocusable(false);
         jScrollPane1.setViewportView(warning);
