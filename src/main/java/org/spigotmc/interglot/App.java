@@ -22,7 +22,6 @@ import org.objectweb.asm.commons.RemappingClassAdapter;
 public class App {
 
     private static final Pattern versioned = Pattern.compile("^.*/v[\\d_]+(?=/)");
-    private static final Pattern v = Pattern.compile("v(\\d_)?");
     private static final Set<String> repackaged = new HashSet<String>();
 
     static {
@@ -58,17 +57,6 @@ public class App {
                     }
                 }
                 return typeName;
-            }
-
-            @Override
-            public Object mapValue(Object value) {
-                if (value instanceof String) {
-                    if (v.matcher((String) value).matches()) {
-                        logger.info("Mapped \"" + value + "\" -> \"Interglot\"");
-                        value = "Interglot";
-                    }
-                }
-                return super.mapValue(value);
             }
         };
 
