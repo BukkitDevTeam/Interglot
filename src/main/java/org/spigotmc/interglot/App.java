@@ -4,7 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -21,9 +24,12 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.RemappingClassAdapter;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 
 public class App {
 
@@ -78,13 +84,7 @@ public class App {
                 }
                 String name = entry.getName();
 
-                ByteArrayOutputStream b = new ByteArrayOutputStream();
-                byte[] buf = new byte[0x1000];
-                int r;
-                while ((r = inJar.read(buf)) != -1) {
-                    b.write(buf, 0, r);
-                }
-                byte[] entryBytes = b.toByteArray();
+                byte[] entryBytes = stream2Byte(inJar);
                 // logger.info("Read " + name + " from input jar.");
 
                 if (name.endsWith(".class")) {
@@ -94,21 +94,11 @@ public class App {
                     entryBytes = cw.toByteArray();
 
                     // Unfortunately for us, Heroes implements an additonal version checker, so even though our bytecode is valid, it still won't run
-                    if (name.equals("com/herocraftonline/heroes/util/VersionChecker.class")) {
-                        ClassNode node = new ClassNode();
-                        cr = new ClassReader(entryBytes);
-                        cr.accept(node, ClassReader.EXPAND_FRAMES);
-
-                        for (MethodNode method : (List<MethodNode>) node.methods) {
-                            if (Type.getReturnType(method.desc) == Type.BOOLEAN_TYPE) {
-                                method.instructions.insert(new InsnNode(Opcodes.IRETURN));
-                                method.instructions.insert(new InsnNode(Opcodes.ICONST_1));
-                            }
-                        }
-
-                        cw = new ClassWriter(cr, 0);
-                        node.accept(cw);
-                        entryBytes = cw.toByteArray();
+                    String heroes = "com/herocraftonline/heroes/util/VersionChecker.class";
+                    if (name.equals(heroes)) {
+                        InputStream in = App.class.getClassLoader().getResourceAsStream(name);
+                        entryBytes = stream2Byte(in);
+                        in.close();
                     }
                     processed++;
                     // logger.info("Processed class file " + name);
@@ -127,5 +117,15 @@ public class App {
             logger.severe("Exception, check console for details!");
             ex.printStackTrace();
         }
+    }
+
+    private static byte[] stream2Byte(InputStream in) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        byte[] buf = new byte[0x1000];
+        int r;
+        while ((r = in.read(buf)) != -1) {
+            b.write(buf, 0, r);
+        }
+        return b.toByteArray();
     }
 }
