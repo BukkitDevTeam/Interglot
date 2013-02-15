@@ -1,6 +1,5 @@
 package org.spigotmc.interglot;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,7 +7,6 @@ import java.io.File;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -21,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -202,10 +199,6 @@ public class Gui extends JFrame {
     private void transformButtonMouseClicked(MouseEvent evt) {//GEN-FIRST:event_transformButtonMouseClicked
         if (inputFile.getText().isEmpty() || outputFile.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please ensure both an input file and output file are selected", "No files", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (!minecraftVersion.getText().matches("[\\d\\\\.]+")) {
-            JOptionPane.showMessageDialog(this, "Please specify a valid Minecraft version!", "Invalid Minecraft version", JOptionPane.ERROR_MESSAGE);
             return;
         }
         new SwingWorker() {
