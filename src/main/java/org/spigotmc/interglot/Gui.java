@@ -112,7 +112,7 @@ public class Gui extends JFrame {
 
         versionLabel.setText("Minecraft Version");
 
-        minecraftVersion.setText("1.4.6");
+        minecraftVersion.setText("1_4_R1");
 
         libigot.setIcon(new ImageIcon(getClass().getResource("/libigot.png"))); // NOI18N
 
